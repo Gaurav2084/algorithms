@@ -10,6 +10,7 @@ Merge Sort - counting inversions
 filename1 = "IntegerTest.txt"
 filename2 = "IntegerArray.txt"
 
+#function for loading integer file and converting to array
 def load_file(filename):
 	int_file = open(filename, "r")
 	ints = int_file.read()
@@ -17,6 +18,7 @@ def load_file(filename):
 	return array_int
 
 
+#function for counting number of inversions in array using merge sort
 def inversionCounter(array_int):
 	"""
 	Takes in list of numbers and computes number of inversions.
@@ -60,6 +62,7 @@ def inversionCounter(array_int):
 	return inversion_count, sorted_array
 
 
+#function for testing inversionCounter function
 def test_inversionCounter():
 	"""
 	Test function for inversionCounter function.
@@ -109,6 +112,7 @@ def test_inversionCounter():
 
 	#end function
 	return
+
 
 #test_inversionCounter()
 integer_array = load_file(filename2)

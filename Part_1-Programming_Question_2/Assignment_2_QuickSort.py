@@ -1,0 +1,126 @@
+"""
+Algorithms: Design and Analysis Part 1
+Stanford University
+
+Programming Question 2
+QuickSort - counting comparisons
+"""
+
+#initialize global variables
+FILENAME = ""
+
+
+def load_file(filename):
+    int_file = open(filename, "r")
+    ints = int_file.read()
+    array_int = map(int, ints.split("\n"))
+    return array_int
+
+	
+def load_file2(filename):
+    with open(filename, "r") as ints:
+        array_int = ints.read().splitlines()
+    return array_int
+
+
+def partition(array, left, right):
+    """
+    Takes starting element and partitions input array into 
+    two sets of elements either less than or greater than.
+
+    input: array of integers (list)
+	    left most index to begin with (integer)
+        right most index to stop at (integer)
+    return: None
+    """
+    #variables initialized for partitioning
+    pivot_element = array[left]
+    index_i = left + 1
+    temp = None
+
+    #loop through array doing comparisons with partition element
+    for index_j in xrange(index_i, right + 1):
+        if array[index_j] < pivot_element:
+            temp = array[index_j]
+            array[index_j] = array[index_i]
+            array[index_i] = temp
+            index_i += 1
+
+    #finally swap pivot element and index i element
+    temp = array[index_i - 1]
+    array[index_i - 1] = array[left]
+    array[left] = temp
+    return index_i
+
+
+def create_pivot(array, pivot_method):
+    """
+    Takes in method wanted for choosing pivot point and returns pivot location.
+
+    input: method (string)
+    output: pivot location (integer)
+    """
+    #initialize pivot index
+    pivot_index = 0
+    
+    return 
+
+
+def quicksort_count(array, left=0, right=None, pivot_method=""):
+    """
+    Takes input array and sorts elements using QuickSort algorithm.
+
+    input: array of integers
+    """
+    #initialize count and pivot elements variable
+    count, count_left, count_right = 0, 0, 0
+    index_i = None
+    if right is None:
+        right = len(array) - 1
+	    
+    #process quicksort logic if array longer than 1
+    if (right - left) > 1:
+        create_pivot(array, pivot_method)
+        count = len(array) - 1
+        index_i = partition(array, left, right)
+        count_left = quicksort_count(array, left, index_i - 1, pivot_method)
+        count_right = quicksort_count(array, index_i + 1, right, pivot_method)
+
+    #add count from inital partition and recursive partitions
+    return count + count_left + count_right
+
+
+def test_quicksort():
+    #test arrays
+    array_one = [1]
+    array_two = [2, 1]
+    array_three = [3, 2, 1]
+    array_four = [5, 1, 2, 4, 3]
+    array_five = [1, 2, 3, 4, 5, 6]
+    array_six = [6, 2, 5, 4, 1, 3]
+
+    #print test functions
+    print "Testing QuickSort function \n"
+    print quicksort_count(array_one)
+    print array_one
+    print "[1] - 0\n"
+    print quicksort_count(array_two)
+    print array_two
+    print "[1, 2] - 1\n"
+    print quicksort_count(array_three)
+    print array_three
+    print "[1, 2, 3] - 2\n"
+    print quicksort_count(array_four)
+    print array_four
+    print "[1, 2, 3, 4, 5] - 7\n"
+    print quicksort_count(array_five)
+    print array_five
+    print "[1, 2, 3, 4, 5, 6] - 9\n"
+    print quicksort_count(array_six)
+    print array_six
+    print "[1, 2, 3, 4, 5, 6] - 9\n"
+
+
+test_quicksort()
+
+
