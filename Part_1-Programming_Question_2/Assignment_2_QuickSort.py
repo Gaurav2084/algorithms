@@ -67,7 +67,7 @@ def create_pivot(array_ints, left, right, pivot_method):
     #finds median of first, last and middle elements and swaps to first position
     elif pivot_method in ("median", "middle"):
         if array_length > 2:
-            middle =  left + (int(round(array_length / 2.0)) - 1)
+            middle = left + (int(round(array_length / 2.0)) - 1)
             median = sorted([array_ints[left], array_ints[middle], array_ints[right]])[1]
         elif array_length == 2:
             median = min([array_ints[left], array_ints[right]])
@@ -121,7 +121,7 @@ def test_quicksort():
 
     #print test functions
     print "Testing QuickSort function \n"
-    print quicksort_count(array_one), 
+    print quicksort_count(array_one),
     print array_one
     print "0 [1] - answer\n"
     print quicksort_count(array_two),
@@ -149,17 +149,14 @@ def count_comparisons():
     array_to_count = initial_array[:]
     comparisons_pivot_first = quicksort_count(array_to_count)
     print comparisons_pivot_first
-    print "Correct answer = 162085\n"
     #print array_to_count
     array_to_count = initial_array[:]
     comparisons_pivot_last = quicksort_count(array_to_count, pivot_method = "end")
     print comparisons_pivot_last
-    print "Correct answer = 164123\n"
     #print array_to_count
     array_to_count = initial_array[:]
     comparisons_pivot_median = quicksort_count(array_to_count, pivot_method = "median")
     print comparisons_pivot_median
-    print "Correct answer = 138382\n"
     #print array_to_count
 
 #test_quicksort()
