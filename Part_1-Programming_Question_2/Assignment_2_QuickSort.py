@@ -51,11 +51,11 @@ def create_pivot(array_ints, left, right, pivot_method):
     output: pivot location (integer)
     """
     #initiate pivot_index
-    pivot_index = 0
+    pivot_index = left
     
     #swaps last element with first element for pivot
     if pivot_method in ("last", "end"):
-        pivot_index = len(array_ints) - 1
+        pivot_index = right
     #finds median of first, last and middle elements and swaps to first position
     elif pivot_method in ("median", "middle"):
         if len(array_ints[left:right + 1]) > 2:
@@ -64,7 +64,7 @@ def create_pivot(array_ints, left, right, pivot_method):
             pivot_index = sorted(median_list)[1]
     
     #swap pivot_index chosen with current first element
-    array_ints[0], array_ints[pivot_index] = array_ints[pivot_index], array_ints[0]
+    array_ints[left], array_ints[pivot_index] = array_ints[pivot_index], array_ints[left]
     return 
 
 
@@ -87,10 +87,10 @@ def quicksort_count(array_ints, left=0, right=None, pivot_method=""):
         create_pivot(array_ints, left, right, pivot_method)
         count = len(array_ints[left:right])
         pivot_index = partition(array_ints, left, right)
-        #if ((pivot_index - 1) - left) > 1:
-        count_left = quicksort_count(array_ints, left, pivot_index - 1, pivot_method)
-        #if (right - (pivot_index + 1)) > 1:
-        count_right = quicksort_count(array_ints, pivot_index + 1, right, pivot_method)
+        if pivot_index > left:
+            count_left = quicksort_count(array_ints, left, pivot_index - 1, pivot_method)
+        if right > pivot_index + 1:
+            count_right = quicksort_count(array_ints, pivot_index + 1, right, pivot_method)
     #print "count, left, right", count, count_left, count_right
 
     #add count from inital partition and recursive partitions
