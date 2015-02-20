@@ -7,7 +7,7 @@ QuickSort - counting comparisons
 """
 
 #initialize global variables
-FILENAME = ""
+FILENAME = "QuickSort.txt"
 
 
 def load_file(filename):
@@ -55,13 +55,15 @@ def partition(array, left, right):
 
 def create_pivot(array, pivot_method):
     """
-    Takes in method wanted for choosing pivot point and returns pivot location.
+    Takes in pivot method and sorts appropiate pivot to first position in array. 
+    If no method given it assumes first element as pivot.
 
-    input: method (string)
+    input: method (string), array of ints
     output: pivot location (integer)
     """
-    #initialize pivot index
-    pivot_index = 0
+    if pivot_method in ("last", "end"):
+        pivot_index = len(array) - 1
+        array[0], array[pivot_index] = array[pivot_index], array[0]
     
     return 
 
@@ -79,12 +81,12 @@ def quicksort_count(array, left=0, right=None, pivot_method=""):
         right = len(array) - 1
 	    
     #process quicksort logic if array longer than 1
-    if (right - left) > 1:
+    if ((right + 1) - left) > 1:
         create_pivot(array, pivot_method)
-        count = len(array) - 1
+        count = (right - left) - 1
         index_i = partition(array, left, right)
         count_left = quicksort_count(array, left, index_i - 1, pivot_method)
-        count_right = quicksort_count(array, index_i + 1, right, pivot_method)
+        count_right = quicksort_count(array, index_i, right, pivot_method)
 
     #add count from inital partition and recursive partitions
     return count + count_left + count_right
@@ -121,6 +123,13 @@ def test_quicksort():
     print "[1, 2, 3, 4, 5, 6] - 9\n"
 
 
+def count_comparisons():
+    array_to_count = load_file(FILENAME)
+    total_comparisons = quicksort_count(array_to_count)
+    print total_comparisons
+    #print array_to_count
+
 test_quicksort()
+count_comparisons()
 
 
