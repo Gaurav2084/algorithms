@@ -18,8 +18,10 @@ def load_file(filename):
 
 	
 def load_file2(filename):
-    with open(filename, "r") as ints:
-        array_int = ints.read().splitlines()
+    with open(filename, "r") as int_file:
+        ints = int_file.read()
+        array_int = map(int, ints.split("\n"))
+        #array_int = ints.read().splitlines()
     return array_int
 
 
@@ -36,20 +38,15 @@ def partition(array, left, right):
     #variables initialized for partitioning
     pivot_element = array[left]
     index_i = left + 1
-    temp = None
 
     #loop through array doing comparisons with partition element
     for index_j in xrange(index_i, right + 1):
         if array[index_j] < pivot_element:
-            temp = array[index_j]
-            array[index_j] = array[index_i]
-            array[index_i] = temp
+            array[index_j], array[index_i]  = array[index_i], array[index_j]
             index_i += 1
 
     #finally swap pivot element and index i element
-    temp = array[index_i - 1]
-    array[index_i - 1] = array[left]
-    array[left] = temp
+    array[index_i - 1], array[left] = array[left], array[index_i - 1]
     return index_i
 
 
@@ -64,7 +61,6 @@ def create_pivot(array, pivot_method):
     if pivot_method in ("last", "end"):
         pivot_index = len(array) - 1
         array[0], array[pivot_index] = array[pivot_index], array[0]
-    
     return 
 
 
@@ -76,23 +72,29 @@ def quicksort_count(array, left=0, right=None, pivot_method=""):
     """
     #initialize count and pivot elements variable
     count, count_left, count_right = 0, 0, 0
-    index_i = None
+    pivot_index = None
     if right is None:
         right = len(array) - 1
 	    
     #process quicksort logic if array longer than 1
     if ((right + 1) - left) > 1:
         create_pivot(array, pivot_method)
-        count = (right - left) - 1
-        index_i = partition(array, left, right)
-        count_left = quicksort_count(array, left, index_i - 1, pivot_method)
-        count_right = quicksort_count(array, index_i, right, pivot_method)
+        count = (right - left)
+        pivot_index = partition(array, left, right)
+        if ((pivot_index - 1) - left) > 1:
+            count_left = quicksort_count(array, left, pivot_index - 1, pivot_method)
+        if (right - pivot_index) > 1:
+            count_right = quicksort_count(array, pivot_index, right, pivot_method)
 
     #add count from inital partition and recursive partitions
     return count + count_left + count_right
 
 
 def test_quicksort():
+    """
+    Test function for building algorithm and not loading entire array set yet.
+    Not complete test of all conditions.
+    """
     #test arrays
     array_one = [1]
     array_two = [2, 1]
@@ -103,33 +105,47 @@ def test_quicksort():
 
     #print test functions
     print "Testing QuickSort function \n"
-    print quicksort_count(array_one)
+    print quicksort_count(array_one), 
     print array_one
-    print "[1] - 0\n"
-    print quicksort_count(array_two)
+    print "0 [1] - answer\n"
+    print quicksort_count(array_two),
     print array_two
-    print "[1, 2] - 1\n"
-    print quicksort_count(array_three)
+    print "1 [1, 2] - answer\n"
+    print quicksort_count(array_three),
     print array_three
-    print "[1, 2, 3] - 2\n"
-    print quicksort_count(array_four)
+    print "3 [1, 2, 3] - answer\n"
+    print quicksort_count(array_four),
     print array_four
-    print "[1, 2, 3, 4, 5] - 7\n"
-    print quicksort_count(array_five)
+    print "7 [1, 2, 3, 4, 5] - answer\n"
+    print quicksort_count(array_five),
     print array_five
-    print "[1, 2, 3, 4, 5, 6] - 9\n"
-    print quicksort_count(array_six)
+    print "9 [1, 2, 3, 4, 5, 6] - answer\n"
+    print quicksort_count(array_six),
     print array_six
-    print "[1, 2, 3, 4, 5, 6] - 9\n"
+    print "9 [1, 2, 3, 4, 5, 6] - answer\n"
 
 
 def count_comparisons():
-    array_to_count = load_file(FILENAME)
-    total_comparisons = quicksort_count(array_to_count)
-    print total_comparisons
+    """
+    Function to run main comparison.
+    """
+    initial_array = load_file2(FILENAME)
+    array_to_count = initial_array[:]
+    comparisons_pivot_first = quicksort_count(array_to_count)
+    print comparisons_pivot_first
+    print "Correct answer = 162085\n"
     #print array_to_count
+#    array_to_count = initial_array[:]
+#    comparisons_pivot_last = quicksort_count(array_to_count, pivot_method = "end")
+#    print comparisons_pivot_last
+#    print "Correct answer = 164123\n"
+#    print array_to_count
+#    array_to_count = initial_array[:]
+#    comparisons_pivot_median = quicksort_count(array_to_count, pivot_method = "median")
+#    print comparisons_pivot_median
+#    print array_to_count
 
 test_quicksort()
-count_comparisons()
+#count_comparisons()
 
 
