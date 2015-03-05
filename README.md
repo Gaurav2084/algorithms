@@ -3,6 +3,7 @@ Algorithms-Design_and_Analysis
 
 Stanford University (Coursera) Algorithms: Design and Analysis, Parts 1 & 2
 
-Repo for Algorithms class programming assignments.
-
-
+Part 1 completed so far and uploaded:
+Inversion Count
+Quicksort
+Karger Min Cut
