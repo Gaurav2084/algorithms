@@ -1,5 +1,4 @@
-Algorithms-Design_and_Analysis
-==============================
+Algorithms Design and Analysis
 
 Stanford University (Coursera) Algorithms: Design and Analysis, Parts 1 & 2
 
