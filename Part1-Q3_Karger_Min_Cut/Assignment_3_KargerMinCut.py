@@ -1,10 +1,9 @@
-"""
-Algorithms: Design and Analysis Part 1
-Stanford University
+# Algorithms: Design and Analysis Part 1
+# Stanford University
 
-Programming Question 3
-Graph Minimum Cuts - Karger Min Cut
-"""
+# Programming Question 3
+ #Graph Minimum Cuts - Karger Min Cut
+
 import random
 import copy
 

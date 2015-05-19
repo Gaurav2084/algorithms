@@ -1,10 +1,9 @@
-"""
-Algorithms: Design and Analysis Part 1
-Stanford University
+# Algorithms: Design and Analysis Part 1
+# Stanford University
 
-Programming Question 2
-QuickSort - counting comparisons
-"""
+# Programming Question 2
+# QuickSort - counting comparisons
+
 import pdb
 
 #initialize global variables

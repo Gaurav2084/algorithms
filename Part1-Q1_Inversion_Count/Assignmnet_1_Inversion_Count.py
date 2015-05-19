@@ -1,10 +1,8 @@
-"""
-Algorithms: Design and Analysis Part 1
-Stanford University
+# Algorithms: Design and Analysis Part 1
+# Stanford University
 
-Programming Question 1
-Merge Sort - counting inversions
-"""
+# Programming Question 1
+# Merge Sort - counting inversions
 
 #initialize globals and input files
 filename1 = "IntegerTest.txt"
