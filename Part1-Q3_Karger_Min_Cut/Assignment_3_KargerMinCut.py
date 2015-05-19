@@ -2,7 +2,7 @@
 # Stanford University
 
 # Programming Question 3
- #Graph Minimum Cuts - Karger Min Cut
+# Graph Minimum Cuts - Karger Min Cut
 
 import random
 import copy
