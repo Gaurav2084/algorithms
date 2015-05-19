@@ -9,8 +9,8 @@
 import urllib2
 
 # global name of file location
-SCC_FILE = "http://spark-public.s3.amazonaws.com/algo1/programming_prob/SCC.txt"
-LOCAL = ""
+SCC_URL = "http://spark-public.s3.amazonaws.com/algo1/programming_prob/SCC.txt"
+SCC_LOCAL = "/Users/Hyperion/Desktop/SCC.txt"
 
 
 def load_file(filename):
@@ -24,11 +24,15 @@ def load_file(filename):
     openers = [urllib2.urlopen, open]
     for func in openers:
         try:
-            with func(filename) as fileobject:
-                for line in fileobject:
-                    nodes = line.split(" ")
-
-            print "Load complete."
+            fileobject = func(filename)
+            for line in fileobject:
+                nodes = line.split(" ")
+                if nodes[0] not in graph:
+                    graph[nodes[0]] = [nodes[1]]
+                else:
+                    graph[nodes[0]].append(nodes[1])
+            fileobject.close()
+            print "Graph loaded."
             return
         except:
             continue
@@ -63,10 +67,13 @@ def dfs(graph, explored, node, times, lead):
     explored.append(node)
 
 
-
-def main():
-    pass
+def main(filename):
+    load_file(filename)
 
 
 def tester():
+
     pass
+
+tester()
+#main(SCC_URL)
