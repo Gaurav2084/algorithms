@@ -47,6 +47,9 @@ def dfs(graph, node):
             node (int)
     """
     global time
+    global fTimes
+    global explored
+    global leaders
     # add node to explored list and notate who its leader is
     explored.append(node)
     leaders[node] = lead
@@ -65,6 +68,7 @@ def dfs_loop(graph):
 
     input: graph (dict)
     """
+    global lead
     max_node = max(graph)
     for node in xrange(max_node, -1, -1):
         if node not in explored:
