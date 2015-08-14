@@ -74,15 +74,37 @@ def dfs_loop(graph):
         if node not in explored:
             lead = node
             dfs(graph, node)
+    return
+
+
+def reverse_graph(graph):
+    """
+    Loops over directional graph creating an exact copy with each edge reversed
+
+    """
+    graph_reversed = {}
+
+    for node in graph:
+        for edge in graph[node]:
+            if edge in graph_reversed:
+                graph_reversed[edge].append(node)
+            else:
+                graph_reversed[edge] = [node]
+
+    return graph_reversed
 
 
 def main(filename):
-    global time  # finishing times for nodes, first pass
-    global lead  # leaders for nodes, second pass
-    global explored = []  # explored nodes
-    global leaders = {}
-    global fTimes = {}  # associated leaders and finishing times
+    global time # finishing times for nodes, first pass
+    global lead # leaders for nodes, second pass
+    global explored # explored nodes
+    global leaders
+    global fTimes # associated leaders and finishing times
+    explored = []
+    leaders = {}
+    fTimes = {}
     load_file(filename)
+    return
 
 
 def tester():
@@ -110,7 +132,9 @@ def tester():
         10: [9],
         11: [10]
     }
-    pass
+
+    print reverse_graph(graph_one)
+    #print reverse_graph(graph_two)
 
 tester()
 #main(SCC_URL)
