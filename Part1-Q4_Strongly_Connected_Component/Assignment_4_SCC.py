@@ -7,10 +7,17 @@
 # Kosaraju's Two-Pass Algorithm
 
 import urllib2
+import sys
 
 # globals
 SCC_URL = "http://spark-public.s3.amazonaws.com/algo1/programming_prob/SCC.txt"
 SCC_LOCAL = "/Users/Hyperion/Desktop/SCC.txt"
+TIME = 0 # finishing times for nodes, first pass
+FTIMES = {} # associated leaders and finishing times
+EXPLORED = [] # explored nodes
+LEADERS = {} # leaders for nodes, second pass
+LEAD = 0 # lead node on second pass
+#sys.setrecursionlimit(300000)
 
 
 def load_file(filename):
@@ -33,7 +40,7 @@ def load_file(filename):
                     graph[nodes[0]].append(nodes[1])
             fileobject.close()
             print "Graph loaded."
-            return
+            return graph
         except:
             continue
     print "Load failed."
@@ -46,20 +53,17 @@ def dfs(graph, node):
     Input:  graph (dict)
             node (int)
     """
-    global time
-    global fTimes
-    global explored
-    global leaders
     # add node to explored list and notate who its leader is
-    explored.append(node)
-    leaders[node] = lead
+    EXPLORED.append(node)
+    LEADERS[node] = LEAD
     # loop through all of edges coming from node, recurse unvisited
     for edge in graph[node]:
-        if edge not in explored:
+        if edge not in EXPLORED:
             dfs(graph, node)
     # increase time step 1 and set nodes time step to new time
-    time += 1
-    fTimes[node] = time
+    TIME += 1
+    print time
+    FTIMES[node] = TIME
 
 
 def dfs_loop(graph):
@@ -68,13 +72,11 @@ def dfs_loop(graph):
 
     input: graph (dict)
     """
-    global lead
     max_node = max(graph)
-    for node in xrange(max_node, -1, -1):
-        if node not in explored:
-            lead = node
+    for node in xrange(max_node, 0, -1):
+        if node not in EXPLORED:
+            LEAD = node
             dfs(graph, node)
-    return
 
 
 def reverse_graph(graph):
@@ -94,17 +96,9 @@ def reverse_graph(graph):
     return graph_reversed
 
 
-def main(filename):
-    global time # finishing times for nodes, first pass
-    global lead # leaders for nodes, second pass
-    global explored # explored nodes
-    global leaders
-    global fTimes # associated leaders and finishing times
-    explored = []
-    leaders = {}
-    fTimes = {}
-    load_file(filename)
-    return
+def main(graph):
+    graph_reversed = reverse_graph(graph)
+    dfs_loop(graph_reversed)
 
 
 def tester():
@@ -114,8 +108,8 @@ def tester():
         3: [9],
         4: [1],
         5: [8],
-        6: [3],
-        7: [9],
+        6: [3, 8],
+        7: [4, 9],
         8: [2],
         9: [6]
     }
@@ -134,7 +128,15 @@ def tester():
     }
 
     print reverse_graph(graph_one)
-    #print reverse_graph(graph_two)
+    print reverse_graph(graph_two)
+    print "Graph Reverser test complete."
+    main(graph_one)
+    print fTimes
+    print time
+    print "DFS looping complete."
+    load_file(SCC_URL)
+    print "File load test complete."
 
 tester()
+#graph = load_file(filename)
 #main(SCC_URL)
