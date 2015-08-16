@@ -12,11 +12,11 @@ import sys
 # globals
 SCC_URL = "http://spark-public.s3.amazonaws.com/algo1/programming_prob/SCC.txt"
 SCC_LOCAL = "/Users/Hyperion/Desktop/SCC.txt"
-TIME = 0 # finishing times for nodes, first pass
-FTIMES = {} # associated leaders and finishing times
-EXPLORED = [] # explored nodes
-LEADERS = {} # leaders for nodes, second pass
-LEAD = 0 # lead node on second pass
+Time = 0 # finishing times for nodes, first pass
+FTimes = {} # associated leaders and finishing times
+Explored = [] # explored nodes
+Leaders = {} # leaders for nodes, second pass
+Lead = 1 # lead node on second pass
 #sys.setrecursionlimit(300000)
 
 
@@ -25,6 +25,7 @@ def load_file(filename):
     Builds graph from specified file location
 
     input: file location (url or local) (string)
+    output: direction graph (dict)
     """
     print "Loading graph..."
     graph = {}
@@ -50,20 +51,20 @@ def dfs(graph, node):
     """
     Depth-First Search through each component
 
-    Input:  graph (dict)
+    input:  graph (dict)
             node (int)
     """
+    global Time
     # add node to explored list and notate who its leader is
-    EXPLORED.append(node)
-    LEADERS[node] = LEAD
+    Explored.append(node)
+    Leaders[node] = Lead
     # loop through all of edges coming from node, recurse unvisited
     for edge in graph[node]:
-        if edge not in EXPLORED:
-            dfs(graph, node)
+        if edge not in Explored:
+            dfs(graph, edge)
     # increase time step 1 and set nodes time step to new time
-    TIME += 1
-    print time
-    FTIMES[node] = TIME
+    Time += 1
+    FTimes[node] = Time
 
 
 def dfs_loop(graph):
@@ -72,10 +73,13 @@ def dfs_loop(graph):
 
     input: graph (dict)
     """
+    global Lead
+    # find last node to work backwards through graph
     max_node = max(graph)
+    # loop through graph running dfs() if node hasn't been visited
     for node in xrange(max_node, 0, -1):
-        if node not in EXPLORED:
-            LEAD = node
+        if node not in Explored:
+            Lead = node
             dfs(graph, node)
 
 
@@ -83,6 +87,7 @@ def reverse_graph(graph):
     """
     Loops over directional graph creating an exact copy with each edge reversed
 
+    input: graph (dict)
     """
     graph_reversed = {}
 
@@ -97,6 +102,12 @@ def reverse_graph(graph):
 
 
 def main(graph):
+    """
+    Logic for using DFS to compute strongly connected component
+
+    input: direction graph (dict)
+    output largest 5 strongly connected comp. (tuple of ints)
+    """
     graph_reversed = reverse_graph(graph)
     dfs_loop(graph_reversed)
 
@@ -131,12 +142,12 @@ def tester():
     print reverse_graph(graph_two)
     print "Graph Reverser test complete."
     main(graph_one)
-    print fTimes
-    print time
+    print FTimes
+    print Leaders
     print "DFS looping complete."
-    load_file(SCC_URL)
-    print "File load test complete."
+    # load_file(SCC_URL)
+    # print "File load test complete."
 
 tester()
-#graph = load_file(filename)
-#main(SCC_URL)
+#problem_graph = load_file(SCC_URL)
+#main(problem_graph)
