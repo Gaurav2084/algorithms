@@ -17,7 +17,7 @@ FTimes = {} # associated leaders and finishing times
 Explored = [] # explored nodes
 Leaders = {} # leaders for nodes, second pass
 Lead = 1 # lead node on second pass
-#sys.setrecursionlimit(300000)
+sys.setrecursionlimit(300000)
 
 
 def load_file(filename):
@@ -87,29 +87,67 @@ def reverse_graph(graph):
     """
     Loops over directional graph creating an exact copy with each edge reversed
 
-    input: graph (dict)
+    input: directional graph (dict)
+    output: directional graph (dict)
     """
     graph_reversed = {}
-
     for node in graph:
         for edge in graph[node]:
             if edge in graph_reversed:
                 graph_reversed[edge].append(node)
             else:
                 graph_reversed[edge] = [node]
-
     return graph_reversed
 
 
-def main(graph):
+def ftime_graph_build(graph):
+    """
+    Loops over directional graph assigning the appropriate finishing times
+    to each respective nodes location
+
+    input: directional graph (dict)
+    output: directional graph (dict)
+    """
+    ftimes_graph = {}
+    for node in graph:
+        edges = []
+        for edge in graph[node]:
+            edges.append(FTimes[edge])
+        ftimes_graph[FTimes[node]] = edges
+    return ftimes_graph
+
+
+def compute_5_SCC(graph):
     """
     Logic for using DFS to compute strongly connected component
 
     input: direction graph (dict)
-    output largest 5 strongly connected comp. (tuple of ints)
+    output largest 5 strongly connected comp. (list of ints)
     """
+    global Explored, FTimes, Leaders
+    # perform first pass on reversed directions of graph
     graph_reversed = reverse_graph(graph)
     dfs_loop(graph_reversed)
+    print 'here'
+    # perform second pass on original directions utilizing finishing times
+    # as node labels
+    ftimes_graph = ftime_graph_build(graph)
+    Explored, FTimes, Leaders = [], {}, {}
+    dfs_loop(ftimes_graph)
+    print 'here'
+
+    # calculate strongly connected components and return top 5
+    lead_counts = {}
+    # first count up all the leaders
+    for node in Leaders:
+        if Leaders[node] in lead_counts:
+            lead_counts[Leaders[node]] += 1
+        else:
+            lead_counts[Leaders[node]] = 1
+    # extract top leader totals
+    scc = sorted(lead_counts.values())
+    scc.reverse()
+    return scc[:5]
 
 
 def tester():
@@ -125,29 +163,32 @@ def tester():
         9: [6]
     }
     graph_two = {
-        1: [2],
+        1: [2, 10],
         2: [3, 4],
-        3: [1, 8, 9],
-        4: [5, 6],
-        5: [6],
-        6: [7],
-        7: [5, 7],
-        8: [5, 10, 11],
+        3: [5],
+        4: [3],
+        5: [4],
+        6: [4, 7, 9],
+        7: [5, 9],
+        8: [6],
         9: [8],
-        10: [9],
-        11: [10]
+        10: [6, 8, 11],
+        11: [1]
     }
 
     print reverse_graph(graph_one)
     print reverse_graph(graph_two)
     print "Graph Reverser test complete."
-    main(graph_one)
-    print FTimes
+    # print compute_5_SCC(graph_one)
+    # print Leaders
+    # print "Test 1 complete."
+    print compute_5_SCC(graph_two)
     print Leaders
-    print "DFS looping complete."
+    print "Test 2 complete."
     # load_file(SCC_URL)
     # print "File load test complete."
 
-tester()
-#problem_graph = load_file(SCC_URL)
-#main(problem_graph)
+#tester()
+problem_graph = load_file(SCC_URL)
+print max(problem_graph)
+#compute_5_SCC(problem_graph)
