@@ -8,14 +8,15 @@
 
 import urllib2
 import sys
+from collections import defaultdict
 
 # globals
 SCC_URL = "http://spark-public.s3.amazonaws.com/algo1/programming_prob/SCC.txt"
 SCC_LOCAL = "/Users/Hyperion/Desktop/SCC.txt"
 Time = 0 # finishing times for nodes, first pass
-FTimes = {} # associated leaders and finishing times
+FTimes = defaultdict(list) # associated leaders and finishing times
 Explored = [] # explored nodes
-Leaders = {} # leaders for nodes, second pass
+Leaders = defaultdict(list) # leaders for nodes, second pass
 Lead = 1 # lead node on second pass
 sys.setrecursionlimit(300000)
 
@@ -28,17 +29,21 @@ def load_file(filename):
     output: direction graph (dict)
     """
     print "Loading graph..."
-    graph = {}
+    graph = defaultdict(list)
     openers = [urllib2.urlopen, open]
     for func in openers:
         try:
             fileobject = func(filename)
             for line in fileobject:
                 nodes = line.split(" ")
-                if nodes[0] not in graph:
-                    graph[nodes[0]] = [nodes[1]]
+                vertex1 = int(nodes[0])
+                vertex2 = int(nodes[1])
+                if vertex1 not in graph:
+                    graph[vertex1] = [vertex2]
                 else:
-                    graph[nodes[0]].append(nodes[1])
+                    graph[vertex1].append(vertex2)
+                if vertex2 not in graph:
+                    graph[vertex2] = []
             fileobject.close()
             print "Graph loaded."
             return graph
@@ -90,13 +95,15 @@ def reverse_graph(graph):
     input: directional graph (dict)
     output: directional graph (dict)
     """
-    graph_reversed = {}
+    graph_reversed = defaultdict(list)
     for node in graph:
         for edge in graph[node]:
             if edge in graph_reversed:
                 graph_reversed[edge].append(node)
             else:
                 graph_reversed[edge] = [node]
+            if node not in graph_reversed:
+                graph_reversed[node] = []
     return graph_reversed
 
 
@@ -108,7 +115,7 @@ def ftime_graph_build(graph):
     input: directional graph (dict)
     output: directional graph (dict)
     """
-    ftimes_graph = {}
+    ftimes_graph = defaultdict(list)
     for node in graph:
         edges = []
         for edge in graph[node]:
@@ -128,16 +135,16 @@ def compute_5_SCC(graph):
     # perform first pass on reversed directions of graph
     graph_reversed = reverse_graph(graph)
     dfs_loop(graph_reversed)
-    print 'here'
+    print 'Pass 1 complete.'
     # perform second pass on original directions utilizing finishing times
     # as node labels
     ftimes_graph = ftime_graph_build(graph)
-    Explored, FTimes, Leaders = [], {}, {}
+    Explored, FTimes, Leaders = [], defaultdict(list), defaultdict(list)
     dfs_loop(ftimes_graph)
-    print 'here'
+    print 'Pass 2 complete.'
 
     # calculate strongly connected components and return top 5
-    lead_counts = {}
+    lead_counts = defaultdict(list)
     # first count up all the leaders
     for node in Leaders:
         if Leaders[node] in lead_counts:
@@ -190,5 +197,4 @@ def tester():
 
 #tester()
 problem_graph = load_file(SCC_URL)
-print max(problem_graph)
-#compute_5_SCC(problem_graph)
+compute_5_SCC(problem_graph)
