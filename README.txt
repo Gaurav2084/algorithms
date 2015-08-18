@@ -7,5 +7,5 @@ Part 1:
 Inversion Count
 Quicksort
 Karger Min Cut - Randomized Graph Contraction
-Strongly Connected Components (in progress)
-
+Kosaraju - Strongly Connected Components
+Dijkstra Shortest Path (in progress)
