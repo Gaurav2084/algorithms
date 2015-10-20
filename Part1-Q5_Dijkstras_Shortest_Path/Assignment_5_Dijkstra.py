@@ -7,9 +7,11 @@
 # Dijkstra Shortest Path Algorithm in Adjacency List
 
 import urllib2
+import re
 
 # globals
-SP_URL = "http://spark-public.s3.amazonaws.com/algo1/programming_prob/dijkstraData.txt"
+SP_URL = ("http://spark-public.s3.amazonaws.com"
+          "/algo1/programming_prob/dijkstraData.txt")
 SP_LOCAL = "dijkstraData.txt"
 
 def load_file(filename):
@@ -22,22 +24,51 @@ def load_file(filename):
     print "Loading graph..."
     graph = {}
     openers = [urllib2.urlopen, open]
+    # loop through both types of file openers and try to open file
     for openFunction in openers:
         try:
             fileObject = openFunction(filename)
+            # process each line converting first node to key and rest to list
             for line in fileObject:
-                print line
                 nodes = line.split("\t")
-                keyNode = int(nodes[0])
+                keyNode = convert_integer(nodes[0])
                 if keyNode not in graph:
-                    graph[keyNode] = nodes[1:]  # TODO convert to ints and remove extra chars
-                print graph
-                return # TODO remove when ready to load entire graph
+                    # loop through each node converting to int
+                    node_list = []
+                    for node in nodes[1:]:
+                        node = convert_integer(node)
+                        if node:
+                            node_list.append(int(node))
+                    # attach list of nodes back to key node
+                    graph[keyNode] = node_list
             fileObject.close()
+
             print "Graph loaded."
             return graph
-        except:
-            continue
+        # if IOError ignore, any other error needs to be printed
+        except IOError:
+            pass
+        except Exception as e:
+            print node_list
+            print e
+            pass
     print "Load failed."
 
-load_file(SP_LOCAL)
+
+def convert_integer(string_int):
+    """
+    Takes a string that contains integers and removes all extra characters
+    returning only the integers
+
+    input: string to convert (string)
+    output: new integer (int)
+    """
+    new_num = ""
+    # replace extra characters with nothing then convert to int
+    clean_string = re.sub('[,\n\r]', '', string_int)
+    if len(clean_string) > 0:
+        new_num = int(clean_string)
+
+    return new_num
+
+load_file(SP_URL)
