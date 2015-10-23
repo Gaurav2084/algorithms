@@ -9,7 +9,7 @@
 import urllib2
 import re
 
-# globals
+# constants
 SP_URL = ("http://spark-public.s3.amazonaws.com"
           "/algo1/programming_prob/dijkstraData.txt")
 SP_LOCAL = "dijkstraData.txt"
@@ -49,7 +49,6 @@ def load_file(filename):
         except IOError:
             pass
         except Exception as e:
-            print node_list
             print e
             pass
     print "Load failed."
@@ -68,7 +67,28 @@ def convert_integer(string_int):
     clean_string = re.sub('[,\n\r]', '', string_int)
     if len(clean_string) > 0:
         new_num = int(clean_string)
-
     return new_num
 
-load_file(SP_URL)
+
+def dijkstra_loop(start_node):
+    """
+    Loop for dijkstra
+
+    Input: start node (int)
+    """
+    vertices_touched = [start_node]
+
+    return
+
+
+def dijkstra_main(datalink):
+    """
+    Main program for dijkstra algorithm.
+    """
+    graph = load_file(datalink)
+
+
+    return
+
+
+#load_file(SP_URL)
