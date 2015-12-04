@@ -33,16 +33,13 @@ def load_file(filename):
             # process each line converting first node to key and rest to list
             for line in fileObject:
                 nodes = line.split("\t")
-                keyNode = convert_integer(nodes[0])
-                if keyNode not in graph:
-                    # loop through each node converting to int
-                    node_list = []
-                    for node in nodes[1:]:
-                        node = convert_integer(node)
-                        if node:
-                            node_list.append(int(node))
-                    # attach list of nodes back to key node
-                    graph[keyNode] = node_list
+                keyNode = int(nodes[0]) # first node is key
+                weighted_edges = {}
+                for node in nodes[1:-1]: # skip first and leave off last
+                    edge, weight = node.split(",")
+                    weighted_edges[int(edge)] = int(weight)
+                # attach list of edges with weights back to key node
+                graph[keyNode] = weighted_edges
             fileObject.close()
 
             print "Graph loaded."
@@ -54,22 +51,6 @@ def load_file(filename):
             print e
             pass
     print "Load failed."
-
-
-def convert_integer(string_int):
-    """
-    Takes a string that contains integers and removes all extra characters
-    returning only the integers
-
-    input: string to convert (string)
-    output: new integer (int)
-    """
-    new_num = ""
-    # replace extra characters with nothing then convert to int
-    clean_string = re.sub('[,\n\r]', '', string_int)
-    if len(clean_string) > 0:
-        new_num = int(clean_string)
-    return new_num
 
 
 def dijkstra_loop(graph, start_node, end_node):
@@ -88,6 +69,7 @@ def dijkstra_loop(graph, start_node, end_node):
     distances = {(start_node, start_node): 0}
 
     while edge_queue:
+
         # need current shortest path to continue to build on
         shortest_path = None
         for edge in edge_queue:
@@ -97,8 +79,7 @@ def dijkstra_loop(graph, start_node, end_node):
         edge_queue.remove(current_edge)
 
         # assign nodes to calculate the next round of distances
-        current_node = current_edge[0]
-        next_node = current_edge[1]
+        current_node = current_edge[1]
         nodes_touched.append(current_node)
 
         # if current node is end search path is complete
@@ -107,13 +88,14 @@ def dijkstra_loop(graph, start_node, end_node):
 
         # loop through next set of nodes touching the end of the current
         # edge and calculate their distances in reference to start node
-        for to_visit in graph[next_node]:
+        for to_visit in graph[current_node]:
             if to_visit not in nodes_touched:
                 edge = (start_node, to_visit)
                 edge_queue.add(edge)
                 distances[edge] = distances[current_edge] + \
-                                  graph[next_node][to_visit]
+                                  graph[current_node][to_visit]
 
+        # TODO max distance is needed
     return distances[(start_node, end_node)]
 
 
@@ -133,7 +115,8 @@ def dijkstra(graph, start_node, end_nodes):
 
     # loop through end_nodes and compute shortest paths
     for end_node in end_nodes:
-        shortest_paths.append(dijkstra_loop(graph, start_node, end_node))
+        path = dijkstra_loop(graph, start_node, end_node)
+        shortest_paths.append(path)
 
     return shortest_paths
 
@@ -145,17 +128,17 @@ def main():
     # first run dijsktra on a test graph with known answer
     test_graph = {}
     test_graph["s"] = {"v": 1, "w": 4}
-    test_graph["v"] = {"w": 2, "t": 6}
-    test_graph["w"] = {"t": 3}
-    test_graph["t"] = {}
+    test_graph["v"] = {"w": 2, "t": 6, "s": 1}
+    test_graph["w"] = {"t": 3, "s": 4, "v": 2}
+    test_graph["t"] = {"w": 3, "v": 6}
     print "Expect result: [6]"
     print "Actual result: " + str(dijkstra(test_graph, "s", ["t"]))
 
     # end nodes that need to find shortest paths for
-    end_nodes = [7, 37, 59, 82, 99, 115, 133, 165, 188, 197]
-    # graph = load_file(SP_URL)
-    # print "Expect result: [2599, 2610, 2947, 2052, 2367, " + \
-    # "2399, 2029, 2505, 3068]"
-    # print "Actual result: " + dijkstra_main(graph, 1, end_nodes)
+    end_nodes = [7] #, 37, 59, 82, 99, 115, 133, 165, 188, 197]
+    graph = load_file(SP_URL)
+    print "Expect result: [2599, 2610, 2947, 2052, 2367, " + \
+    "2399, 2029, 2442, 2505, 3068]"
+    print "Actual result: " + str(dijkstra(graph, 1, end_nodes))
 
 main()
