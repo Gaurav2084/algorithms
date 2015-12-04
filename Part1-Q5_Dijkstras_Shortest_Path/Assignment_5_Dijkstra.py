@@ -7,7 +7,6 @@
 # Dijkstra Shortest Path Algorithm in Adjacency List
 
 import urllib2
-import re
 
 # constants
 SP_URL = ("http://spark-public.s3.amazonaws.com"
@@ -64,13 +63,13 @@ def dijkstra_loop(graph, start_node, end_node):
     """
     # initialize visited nodes and start queue with initial node as first
     # edge, giving itself a distance of zero
-    nodes_touched = []
+    visited = []
     edge_queue = set([(start_node, start_node)])
     distances = {(start_node, start_node): 0}
+    final_edge = (start_node, end_node)
 
     while edge_queue:
-
-        # need current shortest path to continue to build on
+        # extract path with lowest edge weights thus far
         shortest_path = None
         for edge in edge_queue:
             if not shortest_path or distances[edge] < shortest_path:
@@ -80,7 +79,7 @@ def dijkstra_loop(graph, start_node, end_node):
 
         # assign nodes to calculate the next round of distances
         current_node = current_edge[1]
-        nodes_touched.append(current_node)
+        visited.append(current_node)
 
         # if current node is end search path is complete
         if current_node == end_node:
@@ -89,14 +88,19 @@ def dijkstra_loop(graph, start_node, end_node):
         # loop through next set of nodes touching the end of the current
         # edge and calculate their distances in reference to start node
         for to_visit in graph[current_node]:
-            if to_visit not in nodes_touched:
-                edge = (start_node, to_visit)
+            edge = (start_node, to_visit)
+            add_dist = distances[current_edge] + graph[current_node][to_visit]
+            # only queue up edges to nodes not visited
+            if to_visit not in visited:
                 edge_queue.add(edge)
-                distances[edge] = distances[current_edge] + \
-                                  graph[current_node][to_visit]
+            # record distances if don't exist or smaller weight
+            if edge not in distances or distances[edge] > add_dist:
+                distances[edge] = add_dist
 
-        # TODO max distance is needed
-    return distances[(start_node, end_node)]
+    # finally if the two nodes don't meet assign the max distance
+    if final_edge not in distances:
+        distances[final_edge] = MAX_DISTANCE
+    return distances[final_edge]
 
 
 def dijkstra(graph, start_node, end_nodes):
@@ -131,14 +135,11 @@ def main():
     test_graph["v"] = {"w": 2, "t": 6, "s": 1}
     test_graph["w"] = {"t": 3, "s": 4, "v": 2}
     test_graph["t"] = {"w": 3, "v": 6}
-    print "Expect result: [6]"
     print "Actual result: " + str(dijkstra(test_graph, "s", ["t"]))
 
     # end nodes that need to find shortest paths for
-    end_nodes = [7] #, 37, 59, 82, 99, 115, 133, 165, 188, 197]
+    end_nodes = [7, 37, 59, 82, 99, 115, 133, 165, 188, 197]
     graph = load_file(SP_URL)
-    print "Expect result: [2599, 2610, 2947, 2052, 2367, " + \
-    "2399, 2029, 2442, 2505, 3068]"
     print "Actual result: " + str(dijkstra(graph, 1, end_nodes))
 
 main()
