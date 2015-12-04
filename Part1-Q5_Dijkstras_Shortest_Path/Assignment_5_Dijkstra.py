@@ -14,6 +14,7 @@ SP_URL = ("http://spark-public.s3.amazonaws.com"
           "/algo1/programming_prob/dijkstraData.txt")
 SP_LOCAL = "dijkstraData.txt"
 
+
 def load_file(filename):
     """
     Builds graph from specified file location
@@ -70,25 +71,40 @@ def convert_integer(string_int):
     return new_num
 
 
-def dijkstra_loop(start_node):
+def dijkstra(graph, start_node, end_nodes):
     """
-    Loop for dijkstra
+    Main construct for dijkstra's algorithm.  Loops through using BFS
+    calculating weights
 
-    Input: start node (int)
+    input:  graph (dict of dicts)
+            start_node (string or int of node in graph)
+            end_nodes (list of string or int of nodes in graph)
+    output: distances (list of ints)
     """
-    vertices_touched = [start_node]
+    # initialize array for shortest path distances
+    distances = []
+    max_distance = 1000000
 
-    return
+    # loop through end_nodes and compute shortest paths
+    for node in end_nodes:
+        vertices_touched = [start_node]
+        distances[start_node] = 0
 
-
-def dijkstra_main(datalink):
-    """
-    Main program for dijkstra algorithm.
-    """
-    graph = load_file(datalink)
-
-
-    return
+    return distances
 
 
-#load_file(SP_URL)
+def main():
+    # first run dijsktra on a test graph with known answer
+    test_graph = {}
+    test_graph["s"] = {"v": 1, "w": 4}
+    test_graph["v"] = {"s": 1, "t:": 6}
+    test_graph["w"] = {"s": 4, "t": 3}
+    test_graph["t"] = {"v": 6, "w": 3}
+    print "Expect result: [6]"
+    print "Actual result: " + dijkstra_main(test_graph, "s", ["t"])
+
+    end_nodes = [7, 37, 59, 82, 99, 115, 133, 165, 188, 197]
+    # graph = load_file(SP_URL)
+    print "Expect result: [2599, 2610, 2947, 2052, 2367, " +
+    "2399, 2029, 2505, 3068]"
+    print "Actual result: " + dijkstra_main(graph, 1, end_nodes)
