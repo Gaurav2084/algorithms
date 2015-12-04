@@ -13,6 +13,7 @@ import re
 SP_URL = ("http://spark-public.s3.amazonaws.com"
           "/algo1/programming_prob/dijkstraData.txt")
 SP_LOCAL = "dijkstraData.txt"
+MAX_DISTANCE = 1000000
 
 
 def load_file(filename):
@@ -71,6 +72,39 @@ def convert_integer(string_int):
     return new_num
 
 
+def dijkstra_loop(graph, start_node, end_node):
+    """
+    Loop for computing shortest path between two nodes.
+
+    input:  graph
+            start_node
+            end_node
+    return: shortest_path distance (int)
+    """
+    nodes_touched = []
+    node_queue = [(start_node, start_node)]
+    distances = {(start_node, start_node): 0}
+
+    while node_queue:
+        current_edge = node_queue.pop()
+        current_node = current_edge[0]
+        nodes_touched.append(current_node)
+
+        # TODO test if current node is end node
+
+        for to_visit in graph[current_node]:
+            # TODO add more nodes to visit and their weights
+            for future_node in to_visit:
+                if future_node not in nodes_touched:
+                    edge = (current_node, future_node)
+                    node_queue.append(edge)
+                    distances[edge] = distances[current_edge] + \
+                                      to_visit[future_node]
+
+        # return the distance computed between both nodes
+        return distances[(start_node, end_node)]
+
+
 def dijkstra(graph, start_node, end_nodes):
     """
     Main construct for dijkstra's algorithm.  Loops through using BFS
@@ -84,22 +118,10 @@ def dijkstra(graph, start_node, end_nodes):
     """
     # initialize array for shortest path distances
     shortest_paths = []
-    max_distance = 1000000
 
     # loop through end_nodes and compute shortest paths
     for end_node in end_nodes:
-        nodes_touched = []
-        node_queue = [{start_node: start_node}]
-        distances = {(start_node, start_node): 0}
-        current_node = start_node
-
-        while node_queue:
-            for to_visit in graph[current_node]:
-
-
-
-        # after search complete append the distance found
-        shortest_paths.append(distances[(start_node, end_node)])
+        shortest_paths.append(dijkstra_loop(graph, start_node, end_node)
 
     return shortest_paths
 
