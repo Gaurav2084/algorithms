@@ -81,28 +81,40 @@ def dijkstra_loop(graph, start_node, end_node):
             end_node
     return: shortest_path distance (int)
     """
+    # initialize visited nodes and start queue with initial node as first
+    # edge, giving itself a distance of zero
     nodes_touched = []
-    node_queue = [(start_node, start_node)]
+    edge_queue = set([(start_node, start_node)])
     distances = {(start_node, start_node): 0}
 
-    while node_queue:
-        current_edge = node_queue.pop()
+    while edge_queue:
+        # need current shortest path to continue to build on
+        shortest_path = None
+        for edge in edge_queue:
+            if not shortest_path or distances[edge] < shortest_path:
+                shortest_path = distances[edge]
+                current_edge = edge
+        edge_queue.remove(current_edge)
+
+        # assign nodes to calculate the next round of distances
         current_node = current_edge[0]
+        next_node = current_edge[1]
         nodes_touched.append(current_node)
 
-        # TODO test if current node is end node
+        # if current node is end search path is complete
+        if current_node == end_node:
+            break
 
-        for to_visit in graph[current_node]:
-            # TODO add more nodes to visit and their weights
-            for future_node in to_visit:
-                if future_node not in nodes_touched:
-                    edge = (current_node, future_node)
-                    node_queue.append(edge)
-                    distances[edge] = distances[current_edge] + \
-                                      to_visit[future_node]
+        # loop through next set of nodes touching the end of the current
+        # edge and calculate their distances in reference to start node
+        for to_visit in graph[next_node]:
+            if to_visit not in nodes_touched:
+                edge = (start_node, to_visit)
+                edge_queue.add(edge)
+                distances[edge] = distances[current_edge] + \
+                                  graph[next_node][to_visit]
 
-        # return the distance computed between both nodes
-        return distances[(start_node, end_node)]
+    return distances[(start_node, end_node)]
 
 
 def dijkstra(graph, start_node, end_nodes):
@@ -121,7 +133,7 @@ def dijkstra(graph, start_node, end_nodes):
 
     # loop through end_nodes and compute shortest paths
     for end_node in end_nodes:
-        shortest_paths.append(dijkstra_loop(graph, start_node, end_node)
+        shortest_paths.append(dijkstra_loop(graph, start_node, end_node))
 
     return shortest_paths
 
@@ -133,15 +145,17 @@ def main():
     # first run dijsktra on a test graph with known answer
     test_graph = {}
     test_graph["s"] = {"v": 1, "w": 4}
-    test_graph["v"] = {"w": 2, "t:": 6}
+    test_graph["v"] = {"w": 2, "t": 6}
     test_graph["w"] = {"t": 3}
     test_graph["t"] = {}
     print "Expect result: [6]"
-    # print "Actual result: " + dijkstra_main(test_graph, "s", ["t"])
+    print "Actual result: " + str(dijkstra(test_graph, "s", ["t"]))
 
     # end nodes that need to find shortest paths for
     end_nodes = [7, 37, 59, 82, 99, 115, 133, 165, 188, 197]
     # graph = load_file(SP_URL)
-    print "Expect result: [2599, 2610, 2947, 2052, 2367, " +
-    "2399, 2029, 2505, 3068]"
+    # print "Expect result: [2599, 2610, 2947, 2052, 2367, " + \
+    # "2399, 2029, 2505, 3068]"
     # print "Actual result: " + dijkstra_main(graph, 1, end_nodes)
+
+main()
