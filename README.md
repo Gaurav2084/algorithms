@@ -5,16 +5,16 @@
 Repo will include all projects from both Algorithms courses:
 
 ## Includes
-<ul>Part 1:
-<li>Inversion Count</li>
-<li>Quicksort - List sorting</li>
-<li>Karger Min Cut - Randomized Graph Contraction</li>
-<li>Kosaraju - Strongly Connected Components</li>
-<li>Dijkstra Shortest Path (in progress)</li>
-</ul>
+Part 1:
+* Inversion Count
+* Quicksort - List sorting
+* Karger Min Cut - Randomized Graph Contraction
+* Kosaraju - Strongly Connected Components
+* Dijkstra Shortest Path
+* Heaps and Hash Tables - 2Sum and Medium Maintenance
 
-<ul>Part 2:
-</ul>
+Part 2:
+
 
 ## Contributors
 - Mark Hess
