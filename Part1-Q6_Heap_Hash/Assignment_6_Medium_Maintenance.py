@@ -12,7 +12,6 @@ import heapq
 # constants
 MEDIAN_URL = "http://spark-public.s3.amazonaws.com/" + \
              "algo1/programming_prob/Median.txt"
-NUM_OF_INTS = 10000
 
 
 def stream_file(filename):
@@ -27,24 +26,49 @@ def stream_file(filename):
     file_object.close()
 
 
-def main(num_ints, filename):
+def main(filename):
     """
     Main program logic for median maintenance algorithm.
-    :param num_ints: number of integers to modulo with (int)
     :param filename: file location of integers (string)
     :return: sum of ints modulo number of ints (int)
     """
     median_sums = 0
-    low_heap = heapq
-    high_heap = heapq
+    total_nums = 0
+    # create lesser half heap and track stats
+    low_heap, max_low, total_low = list, 0, 0
+    # create greater half heap and track stats
+    high_heap, min_high, total_high = list, 0, 0
 
     # loop through numbers from file
     for number in stream_file(filename):
-        break
+        total_nums += 1
 
-    # return sum of all medians
-    return median_sums % num_ints
+        if number <= max_low:
+            heapq.heappush(low_heap, (-1 * number))
+            total_low += 1
+            max_low = -1 * heapq.heappop(low_heap)
+        else:
+            heapq.heappush(high_heap, number)
+            total_high += 1
+            min_high = heapq.heappop(high_heap)
+
+        # balance heaps if too many numbers in either one
+        if (total_low - total_high) > 1:
+            heapq.heappush(high_heap, max_low)
+            max_low = -1 * heapq.heappop(low_heap)
+        elif (total_high - total_low) > 1:
+            heapq.heappush(low_heap, min_high)
+            min_high = heapq.heappop(high_heap)
+
+        # determine if on even or median and calculate
+        if total_nums % 2 == 0:
+            median_sums += max_low
+        else:
+            median_sums += min_high
+
+    # return sum of all medians modulo total numbers
+    return median_sums % total_nums
 
 
 # print to console result of the algorithm on given file
-print "Answer is: " + str(main(NUM_OF_INTS, MEDIAN_URL))
+print "Answer is: " + str(main(MEDIAN_URL))
