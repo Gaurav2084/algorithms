@@ -33,41 +33,31 @@ def main(filename):
     :return: sum of ints modulo number of ints (int)
     """
     median_sums = 0
-    total_nums = 0
-    # create lesser half heap and track stats
-    low_heap, max_low, total_low = list, 0, 0
-    # create greater half heap and track stats
-    high_heap, min_high, total_high = list, 0, 0
+    low_heap, high_heap = [], []
+    max_low = 0
 
     # loop through numbers from file
     for number in stream_file(filename):
-        total_nums += 1
-
+        # determine which heap the next number goes into
         if number <= max_low:
             heapq.heappush(low_heap, (-1 * number))
-            total_low += 1
-            max_low = -1 * heapq.heappop(low_heap)
         else:
             heapq.heappush(high_heap, number)
-            total_high += 1
-            min_high = heapq.heappop(high_heap)
 
-        # balance heaps if too many numbers in either one
-        if (total_low - total_high) > 1:
-            heapq.heappush(high_heap, max_low)
+        # keep heaps even or low_heap with one additional
+        if (len(low_heap) - len(high_heap)) > 1:
             max_low = -1 * heapq.heappop(low_heap)
-        elif (total_high - total_low) > 1:
-            heapq.heappush(low_heap, min_high)
-            min_high = heapq.heappop(high_heap)
+            heapq.heappush(high_heap, max_low)
+            max_low = low_heap[0]
+        elif (len(high_heap) - len(low_heap)) >= 1:
+            max_low = heapq.heappop(high_heap)
+            heapq.heappush(low_heap, -1 * max_low)
 
-        # determine if on even or median and calculate
-        if total_nums % 2 == 0:
-            median_sums += max_low
-        else:
-            median_sums += min_high
+        # add highest low number to median every time
+        median_sums += max_low
 
     # return sum of all medians modulo total numbers
-    return median_sums % total_nums
+    return median_sums % (len(low_heap) + len(high_heap))
 
 
 # print to console result of the algorithm on given file
