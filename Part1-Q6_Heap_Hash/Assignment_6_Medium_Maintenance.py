@@ -48,7 +48,7 @@ def main(filename):
         if (len(low_heap) - len(high_heap)) > 1:
             max_low = -1 * heapq.heappop(low_heap)
             heapq.heappush(high_heap, max_low)
-            max_low = low_heap[0]
+            max_low = -1 * low_heap[0]
         elif (len(high_heap) - len(low_heap)) >= 1:
             max_low = heapq.heappop(high_heap)
             heapq.heappush(low_heap, -1 * max_low)
