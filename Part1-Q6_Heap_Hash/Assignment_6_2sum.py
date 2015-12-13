@@ -14,13 +14,22 @@ SUM_URL = "https://d396qusza40orc.cloudfront.net/" + \
 TARGET_SUM = 10000
 
 
-def stream_file(filename):
+def open_file(filename):
     """
-    Method for reading in a large file and generating one line at a time
+    Reads in file from disk and inputs into an array
     :param filename: file location (string)
-    :return: yields one line from file at a time (int)
+    :return: num_array: list of numbers
     """
-    yield int
+    num_array = list()
+
+    # open file and read each line into array
+    print "Loading file..."
+    file_object = urllib2.urlopen(filename)
+    for line in file_object:
+        num_array.append(int(line))
+    file_object.close()
+    print "File loaded."
+    return num_array
 
 
 def main(target_sum, filename):
@@ -28,28 +37,41 @@ def main(target_sum, filename):
     Main control for program.  Takes each line provided by stream_file
     and checks if exists in hash, if not calculates number of variants
     that meat target_sum provide.
-    :param target_sum: absolute value max sum (int)
+    :param target_sum: positive value max sum (int)
     :param filename: location of file to read (string)
     :return: count: total number (int)
     """
-    numbers = {}  # hash to be used to track
-    count = 0  # total variations for x + y = t
+    numbers = dict()
+    processed = 0
+    sums = dict()
 
-    # grab each number from filestream as read
-    for current_num in stream_file(filename):
+    # get num array from file then insert into hash, de-duping
+    num_array = open_file(filename)
+    print "Loading numbers into hash..."
+    for current_num in num_array:
+        numbers[current_num] = True
 
-        # check if already seen current number
-        if current_num in numbers:
-            continue
+    # Iterate through hash and search for each numbers counter range
+    print "Searching for 2-Sum variants..."
+    for num in numbers:
+        processed += 1
+        for range_num in xrange(target_sum * -1, target_sum + 1):
+            counter_num = range_num - num
 
-        # insert number into hash, search for 2-sum variants
-        numbers[current_num] = []
-        for number in numbers:
-            sum = abs(number + current_num)
-            if sum <= target_sum:
-                numbers[number].append(current_num)
-                numbers[current_num].append(number)
-                count += 1
+            # if number exists hash, solution is possible
+            if num == counter_num or counter_num not in numbers or \
+               range_num in sums:
+                continue
+            pair = tuple(sorted([counter_num, num]))
+            sums[range_num] = pair
+
+        if processed % 20000 == 0:
+            print "Processed 20,000 more, at " + str(processed)
+            print "Current total is " + str(len(sums))
 
     # after all numbers read from file return count
-    return count
+    return len(sums)
+
+
+# Process main program logic with both given constants
+print "Answer is: " + str(main(TARGET_SUM, SUM_URL))
