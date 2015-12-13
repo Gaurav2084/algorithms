@@ -8,7 +8,6 @@
 import urllib2
 import heapq
 
-
 # constants
 MEDIAN_URL = "http://spark-public.s3.amazonaws.com/" + \
              "algo1/programming_prob/Median.txt"
@@ -36,8 +35,10 @@ def main(filename):
     low_heap, high_heap = [], []
     max_low = 0
 
-    # loop through numbers from file
+    # Read numbers from file one at a time and process
+    print "Initializing stream and beginning median loop..."
     for number in stream_file(filename):
+
         # determine which heap the next number goes into
         if number <= max_low:
             heapq.heappush(low_heap, (-1 * number))
@@ -53,7 +54,7 @@ def main(filename):
             max_low = heapq.heappop(high_heap)
             heapq.heappush(low_heap, -1 * max_low)
 
-        # add highest low number to median every time
+        # add highest low heap number to median every time
         median_sums += max_low
 
     # return sum of all medians modulo total numbers
