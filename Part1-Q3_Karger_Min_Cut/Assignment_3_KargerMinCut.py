@@ -46,9 +46,6 @@ def karger_min_cut(graph):
     graph_length = len(graph)
     point_u, point_v = None, None  # edge start and end points
 
-    # if only 2 vertices cuts has to be 1
-    if graph_length == 2:
-        cuts = 1
     # while loop logic that performs contractions
     while graph_length > 2:
         # pick random edge (u, v)
@@ -121,7 +118,7 @@ def tester():
     return
 
 # run tester first
-#tester()
+tester()
 
 # load file and find result
 graph = load_graph(FILENAME)
