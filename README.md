@@ -15,6 +15,7 @@ Part 1:
 
 Part 2:
 
+TODO (now 4 part course on Coursera, goal is to complete that)
 
 ## Contributors
 - Mark Hess
